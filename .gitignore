@@ -1,0 +1,14 @@
+node_modules
+.env
+package-lock.json
+
+#Hardhat files
+cache
+artifacts
+.DS_Store
+
+*.swp
+*.swc
+*.swo
+
+.secret.js
