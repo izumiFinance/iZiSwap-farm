@@ -85,7 +85,7 @@ contract OneSide is Base {
         uint256 _endBlock,
         uint24 feeChargePercent,
         address _chargeReceiver
-    ) MiningBaseiZiSwap(
+    ) Base (
         feeChargePercent, 
         poolParams.iZiSwapLiquidityManager, 
         poolParams.oneSideTokenAddr,
@@ -392,15 +392,17 @@ contract OneSide is Base {
         bool res = tokenIds[msg.sender].add(newTokenStatus.nftId);
         require(res);
 
-        if (actualOneSideAmount < oneSideAmount) {
-            if (oneSideIsETH) {
+        if (oneSideIsETH) {
+            if (actualOneSideAmount < msg.value) {
                 // refund oneSideToken
                 // from uniswap to this
                 IiZiSwapLiquidityManager(iZiSwapLiquidityManager).refundETH();
                 // from this to msg.sender
                 if (address(this).balance > 0)
                     _safeTransferETH(msg.sender, address(this).balance);
-            } else {
+            }
+        } else {
+            if (actualOneSideAmount < oneSideAmount) {
                 // refund oneSideToken
                 IERC20(oneSideToken).safeTransfer(
                     msg.sender,

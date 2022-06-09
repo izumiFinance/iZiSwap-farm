@@ -72,7 +72,7 @@ contract FixRange is Base, IERC721Receiver {
         uint256 _endBlock,
         uint24 _feeChargePercent,
         address _chargeReceiver
-    ) MiningBaseiZiSwap(_feeChargePercent, poolParams.iZiSwapLiquidityManager, poolParams.tokenX, poolParams.tokenY, poolParams.fee, _chargeReceiver) {
+    ) Base (_feeChargePercent, poolParams.iZiSwapLiquidityManager, poolParams.tokenX, poolParams.tokenY, poolParams.fee, _chargeReceiver) {
         iZiSwapLiquidityManager = poolParams.iZiSwapLiquidityManager;
 
         require(_rewardLowerTick < _rewardUpperTick, "L<U");
