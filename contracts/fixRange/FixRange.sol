@@ -14,11 +14,11 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "../multicall.sol";
 import "../libraries/Math.sol";
 
-import "../base/MiningBaseiZiSwap.sol";
+import "../base/Base.sol";
 
 
 /// @title Uniswap V3 Liquidity Mining Main Contract
-contract MiningFixRangeiZiSwap is MiningBaseiZiSwap, IERC721Receiver {
+contract FixRange is Base, IERC721Receiver {
     using Math for int24;
     using SafeERC20 for IERC20;
     using EnumerableSet for EnumerableSet.UintSet;

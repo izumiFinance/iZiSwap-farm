@@ -14,11 +14,11 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "../libraries/iZiSwapOracle.sol";
 import "../libraries/iZiSwapCallingParams.sol";
 
-import "../base/MiningBaseiZiSwap.sol";
+import "../base/Base.sol";
 
 
 /// @title Uniswap V3 Liquidity Mining Main Contract
-contract MiningOneSideiZiSwapV3 is MiningBaseiZiSwap {
+contract OneSide is Base {
     // using Math for int24;
     using SafeERC20 for IERC20;
     using EnumerableSet for EnumerableSet.UintSet;

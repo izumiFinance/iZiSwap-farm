@@ -27,7 +27,7 @@ interface IWETH9 is IERC20 {
     function withdraw(uint256) external;
 }
 
-abstract contract MiningBaseiZiSwap is Ownable, Multicall, ReentrancyGuard {
+abstract contract Base is Ownable, Multicall, ReentrancyGuard {
 
     using SafeERC20 for IERC20;
     using EnumerableSet for EnumerableSet.UintSet;
