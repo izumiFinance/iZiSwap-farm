@@ -314,17 +314,26 @@ contract FixRange is Base, IERC721Receiver {
 
         // charge and refund remain fee to user
 
-        (uint256 amountX, uint256 amountY) = IiZiSwapLiquidityManager(
-            iZiSwapLiquidityManager
-        ).collect(
-            address(this),
-            tokenId,
-            type(uint128).max,
-            type(uint128).max
-        );
+        uint256 amountX;
+        uint256 amountY;
 
-        uint256 lastRemainTokenX = tokenStatus[tokenId].lastRemainTokenX;
-        uint256 lastRemainTokenY = tokenStatus[tokenId].lastRemainTokenY;
+        try
+            (amountX, amountY) = IiZiSwapLiquidityManager(
+                iZiSwapLiquidityManager
+            ).collect(
+                address(this),
+                tokenId,
+                type(uint128).max,
+                type(uint128).max
+            )
+        {} catch (bytes memory) {
+            // if revert, 
+            amountX = 0;
+            amountY = 0;
+        }
+
+        uint256 lastRemainTokenX = Math.min(tokenStatus[tokenId].lastRemainTokenX, amountX);
+        uint256 lastRemainTokenY = Math.min(tokenStatus[tokenId].lastRemainTokenY, amountY);
 
         uint256 refundAmountX = lastRemainTokenX + (amountX - lastRemainTokenX) * feeRemainPercent / 100;
         uint256 refundAmountY = lastRemainTokenY + (amountY - lastRemainTokenY) * feeRemainPercent / 100;
