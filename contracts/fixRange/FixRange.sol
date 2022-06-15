@@ -318,15 +318,18 @@ contract FixRange is Base, IERC721Receiver {
         uint256 amountY;
 
         try
-            (amountX, amountY) = IiZiSwapLiquidityManager(
+            IiZiSwapLiquidityManager(
                 iZiSwapLiquidityManager
             ).collect(
                 address(this),
                 tokenId,
                 type(uint128).max,
                 type(uint128).max
-            )
-        {} catch (bytes memory) {
+            ) returns(uint256 ax, uint256 ay)
+        {
+            amountX = ax;
+            amountY = ay;
+        } catch (bytes memory) {
             // if revert, 
             amountX = 0;
             amountY = 0;

@@ -383,13 +383,23 @@ contract DynamicRange is Base {
             // refund iZi to user
             iziToken.safeTransfer(msg.sender, t.nIZI);
         }
+        uint256 amountX;
+        uint256 amountY;
 
-        // first charge and send remain fee from iZiSwap to user
-        (uint256 amountX, uint256 amountY) = IiZiSwapLiquidityManager(
-            iZiSwapLiquidityManager
-        ).collect(
-            address(this), tokenId, type(uint128).max, type(uint128).max
-        );
+        try
+            // first charge and send remain fee from iZiSwap to user
+            IiZiSwapLiquidityManager(
+                iZiSwapLiquidityManager
+            ).collect(
+                address(this), tokenId, type(uint128).max, type(uint128).max
+            ) returns (uint256 ax, uint256 ay)
+        {
+            amountX = ax;
+            amountY = ay;
+        } catch (bytes memory) {
+            amountX = 0;
+            amountY = 0;
+        }
         uint256 refundAmountX = amountX * feeRemainPercent / 100;
         uint256 refundAmountY = amountY * feeRemainPercent / 100;
         _safeTransferToken(rewardPool.tokenX, msg.sender, refundAmountX);
