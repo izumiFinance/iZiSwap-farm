@@ -51,7 +51,7 @@ var para = {
 
     boost: v[15],
     feeChargePercent: v[16],
-    chargeReceiver: contracts[net][v[17]],
+    chargeReceiver: getProviderAddress(v[17]),
 }
 
 
