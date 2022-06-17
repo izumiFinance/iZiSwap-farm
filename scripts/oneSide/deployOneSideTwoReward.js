@@ -117,7 +117,7 @@ async function main() {
 
   const args = [
     {
-      uniV3NFTManager: contracts[net].nftManager,
+      iZiSwapLiquidityManager: contracts[net].liquidityManager,
       uniTokenAddr: para.tokenUniAddress,
       lockTokenAddr: para.tokenLockAddress,
       fee: para.fee
