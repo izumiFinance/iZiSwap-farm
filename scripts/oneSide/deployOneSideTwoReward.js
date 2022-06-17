@@ -50,7 +50,7 @@ var para = {
 
     boost: v[14],
     feeChargePercent: v[15],
-    chargeReceiver: getProviderAddress([16]),
+    chargeReceiver: getProviderAddress(v[16]),
 }
 console.log('para: ', para);
 
