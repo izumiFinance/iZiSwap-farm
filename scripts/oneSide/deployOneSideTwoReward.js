@@ -118,7 +118,7 @@ async function main() {
   const args = [
     {
       iZiSwapLiquidityManager: contracts[net].liquidityManager,
-      uniTokenAddr: para.tokenUniAddress,
+      oneSideTokenAddr: para.tokenUniAddress,
       lockTokenAddr: para.tokenLockAddress,
       fee: para.fee
     },
