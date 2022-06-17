@@ -110,7 +110,7 @@ contract OneSide is Base {
             oneSideToken,
             poolParams.fee
         );
-        require(swapPool != address(0), "NO UNI POOL");
+        require(swapPool != address(0), "NO iZi POOL");
 
         rewardInfosLen = _rewardInfos.length;
         require(rewardInfosLen > 0, "NO REWARD");
