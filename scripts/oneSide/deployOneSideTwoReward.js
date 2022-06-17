@@ -50,7 +50,7 @@ var para = {
 
     boost: v[14],
     feeChargePercent: v[15],
-    chargeReceiver: contracts[net][v[16]],
+    chargeReceiver: getProviderAddressv([16]),
 }
 console.log('para: ', para);
 
@@ -149,8 +149,8 @@ async function main() {
 
   // console.log(mining.deployTransaction);
   
-  // await approve(await attachToken(para.rewardTokenAddress0), deployer, mining.address, "1000000000000000000000000000000");
-  // await approve(await attachToken(para.rewardTokenAddress1), deployer, mining.address, "1000000000000000000000000000000");
+  await approve(await attachToken(para.rewardTokenAddress0), deployer, mining.address, "1000000000000000000000000000000");
+  await approve(await attachToken(para.rewardTokenAddress1), deployer, mining.address, "1000000000000000000000000000000");
 
   console.log("MiningOneSideBoost Contract Address: " , mining.address);
 
