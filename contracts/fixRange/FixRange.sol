@@ -43,6 +43,16 @@ contract FixRange is Base, IERC721Receiver {
 
     mapping(uint256 => TokenStatus) public tokenStatus;
 
+    function tokenStatusLastTouchAccRewardPerShare(uint256 tokenId) public view returns(uint256[] memory lastTouchAccRewardPerShare) {
+        if (rewardInfosLen > 0) {
+            lastTouchAccRewardPerShare = new uint256[](rewardInfosLen);
+            TokenStatus memory ts = tokenStatus[tokenId];
+            for (uint256 i = 0; i < rewardInfosLen; i ++) {
+                lastTouchAccRewardPerShare[i] = ts.lastTouchAccRewardPerShare[i];
+            }
+        }
+    }
+
     // override for mining base
     function getBaseTokenStatus(uint256 tokenId) internal override view returns(BaseTokenStatus memory t) {
         TokenStatus memory ts = tokenStatus[tokenId];
