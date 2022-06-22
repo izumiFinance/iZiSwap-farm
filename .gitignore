@@ -12,3 +12,6 @@ artifacts
 *.swo
 
 .secret.js
+
+/test/iZiSwap
+test/iZiSwap/*

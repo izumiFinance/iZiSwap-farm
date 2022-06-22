@@ -12,7 +12,8 @@ const BigNumber = require("bignumber.js");
 //     14163662 14712919 \
 //     1 \
 //     40 \ 
-//     CHARGE_RECEIVER
+//     CHARGE_RECEIVER \
+//     23027
 const v = process.argv
 const net = process.env.HARDHAT_NETWORK
 
@@ -51,6 +52,7 @@ var para = {
     boost: v[14],
     feeChargePercent: v[15],
     chargeReceiver: getProviderAddress(v[16]),
+    tickRangeLong: Number(v[17])
 }
 console.log('para: ', para);
 
@@ -137,6 +139,7 @@ async function main() {
     para.lockBoostMultiplier,
     iziAddr,
     para.startBlock, para.endBlock,
+    para.tickRangeLong,
     para.feeChargePercent,
     para.chargeReceiver,
   ];
