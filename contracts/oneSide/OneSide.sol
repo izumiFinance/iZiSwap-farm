@@ -28,6 +28,8 @@ contract OneSide is Base {
     int24 internal constant TICK_MAX = 500000;
     int24 internal constant TICK_MIN = -500000;
 
+    int24 public tickRangeLong;
+
     bool public oneSideIsETH;
 
     address public oneSideToken;
@@ -83,6 +85,7 @@ contract OneSide is Base {
         address iziTokenAddr,
         uint256 _startBlock,
         uint256 _endBlock,
+        int24 _tickRangeLong,
         uint24 feeChargePercent,
         address _chargeReceiver
     ) Base (
@@ -132,6 +135,11 @@ contract OneSide is Base {
 
         startBlock = _startBlock;
         endBlock = _endBlock;
+
+        require(_tickRangeLong > 0, 'tl > 0');
+        require(_tickRangeLong <= 23027, 'price times < 10');
+
+        tickRangeLong = _tickRangeLong;
 
         lastTouchBlock = startBlock;
 
@@ -306,20 +314,20 @@ contract OneSide is Base {
             // price is lockToken / oneSideToken
             // oneSideToken is X
             leftPoint = Math.max(currPoint + 1, avgPoint);
-            rightPoint = TICK_MAX;
             // round up to times of pointDelta
-            // uniswap only receive Point which is times of pointDelta
+            // iziswap only receive Point which is times of pointDelta
             leftPoint = Math.tickUpper(leftPoint, pointDelta);
+            rightPoint = Math.min(leftPoint + tickRangeLong, TICK_MAX);
             rightPoint = Math.tickUpper(rightPoint, pointDelta);
         } else {
             // price is oneSideToken / lockToken
             // oneSideToken is Y
             rightPoint = Math.min(currPoint, avgPoint);
-            leftPoint = TICK_MIN;
             // round down to times of pointDelta
-            // uniswap only receive Point which is times of pointDelta
-            leftPoint = Math.tickFloor(leftPoint, pointDelta);
+            // iziswap only receive Point which is times of pointDelta
             rightPoint = Math.tickFloor(rightPoint, pointDelta);
+            leftPoint = Math.max(rightPoint - tickRangeLong, TICK_MIN);
+            leftPoint = Math.tickFloor(leftPoint, pointDelta);
         }
         require(leftPoint < rightPoint, "L<R");
         sqrtPriceX96 = avgSqrtPriceX96;
