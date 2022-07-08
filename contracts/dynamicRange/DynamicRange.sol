@@ -223,10 +223,13 @@ contract DynamicRange is Base {
             int24 rightPoint
         )
     {
-        (int24 avgPoint, , , ) = swapPool.getAvgPointPriceWithin2Hour();
+        (int24 avgPoint, , int24 currentPoint, ) = swapPool.getAvgPointPriceWithin2Hour();
         int56 delta = int56(avgPoint) - int56(stdPoint);
         delta = (delta >= 0) ? delta: -delta;
-        require(delta < 2500, "TICK BIAS");
+        require(delta <= 500, "TICK BIAS AS");
+        delta = int56(currentPoint) - int56(stdPoint);
+        delta = (delta >= 0) ? delta: -delta;
+        require(delta <= 500, "TICK BIAS CS");
         // pointSpacing != 0 is ensured before deploy this contract
         int24 pointDelta = IiZiSwapFactory(iZiSwapFactory).fee2pointDelta(rewardPool.fee);
 

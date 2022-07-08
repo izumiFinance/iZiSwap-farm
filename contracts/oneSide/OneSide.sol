@@ -305,7 +305,10 @@ contract OneSide is Base {
         
         int56 delta = int56(avgPoint) - int56(stdPoint);
         delta = (delta >= 0) ? delta: -delta;
-        require(delta < 2500, "TICK BIAS");
+        require(delta <= 500, "TICK BIAS AS");
+        delta = int56(currPoint) - int56(stdPoint);
+        delta = (delta >= 0) ? delta: -delta;
+        require(delta <= 500, "TICK BIAS CS");
 
         int24 pointDelta = IiZiSwapFactory(iZiSwapFactory).fee2pointDelta(
             rewardPool.fee
