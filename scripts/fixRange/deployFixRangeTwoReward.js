@@ -13,6 +13,7 @@ const BigNumber = require("bignumber.js");
 //     1 \
 //     40 \
 //     CHARGE_RECEIVER
+//     0/1 //real deploy
 const v = process.argv
 const net = process.env.HARDHAT_NETWORK
 
@@ -49,6 +50,7 @@ var para = {
     boost: v[15],
     feeChargePercent: v[16],
     chargeReceiver: getAddress(v[17]),
+    realDeploy: v[18]
 }
 
 
@@ -178,18 +180,18 @@ async function main() {
   ];
 
   console.log('args: ', args);
-
-//   const mining = await Mining.deploy(
-//     ...args
-//   );
-//   console.log(mining.deployTransaction);
-//   await mining.deployed();
+   if(para.realDeploy === '1') {
+   const mining = await Mining.deploy(
+     ...args
+   );
+   console.log(mining.deployTransaction);
+   await mining.deployed();
   
-//   // await approve(await attachToken(para.rewardTokenAddress0), deployer, mining.address, "1000000000000000000000000000000");
-//   // await approve(await attachToken(para.rewardTokenAddress1), deployer, mining.address, "1000000000000000000000000000000");
+ //  await approve(await attachToken(para.rewardTokenAddress0), deployer, mining.address, "1000000000000000000000000000000");
+ //  await approve(await attachToken(para.rewardTokenAddress1), deployer, mining.address, "1000000000000000000000000000000");
 
-//   console.log("MiningFixRangeBoost Contract Address: " , mining.address);
-
+   console.log("MiningFixRangeBoost Contract Address: " , mining.address);
+   }
 }
 
 main()
