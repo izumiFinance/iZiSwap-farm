@@ -63,15 +63,20 @@ module.exports = {
     ethereum: {
       url: "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
       gas: 7792207,
-      gasPrice: 25000000000,
+      gasPrice: 13000000000,
       accounts: [sk]
     },
     bscTest: {
-      url: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+	    url: 'https://data-seed-prebsc-1-s3.binance.org:8545/',
       accounts: [sk],
       // gas: 90000000,
       gasPrice: 10000000000,
     },
+    bsc: {
+	url: 'https://bsc-dataseed.binance.org/',
+        accounts: [sk],
+	gasPrice: 5000000000,
+    }
   },
   docgen: {
     path: './docs',
@@ -79,6 +84,6 @@ module.exports = {
     runOnCompile: true,
   },
   etherscan: {
-    apiKey: apiKey,
+	  apiKey: apiKey,
   }
 };
