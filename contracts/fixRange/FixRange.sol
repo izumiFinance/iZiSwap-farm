@@ -17,7 +17,7 @@ import "../libraries/Math.sol";
 import "../base/Base.sol";
 
 
-/// @title Uniswap V3 Liquidity Mining Main Contract
+/// @title iZiSwap Liquidity Mining Main Contract
 contract FixRange is Base, IERC721Receiver {
     using Math for int24;
     using SafeERC20 for IERC20;
