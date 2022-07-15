@@ -161,6 +161,9 @@ async function main() {
   const mining = await Mining.deploy(...args);
   await mining.deployed();
   
+  await approve(await attachToken(para.rewardTokenAddress0), deployer, mining.address, "1000000000000000000000000000000");
+  await approve(await attachToken(para.rewardTokenAddress1), deployer, mining.address, "1000000000000000000000000000000");
+
   console.log("MiningDynamicRangeBoost Contract Address: " , mining.address);
 
 }
