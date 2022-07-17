@@ -26,6 +26,10 @@ const contracts = {
         iUSD: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
         WBNB: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
         liquidityManager: '0x93C22Fbeff4448F2fb6e432579b0638838Ff9581',
+        SLD: '0x1ef6A7e2c966fb7C5403EFEFdE38338b1a95a084',
+        KSW: '0x270178366a592bA598C2e9d2971DA65f7bAa7C86',
+        REVO: '0xfC279e6ff1FB1C7F5848d31561cAb27d34a2856b',
+        LAND: '0x9A981FAcCD3B9b3B9453BFF266296fc0f2De21a2'
     },
     ethereum: {
 	
