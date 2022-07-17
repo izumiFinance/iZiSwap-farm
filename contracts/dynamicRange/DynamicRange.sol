@@ -17,7 +17,7 @@ import "../libraries/iZiSwapCallingParams.sol";
 import "../base/Base.sol";
 
 
-/// @title Uniswap V3 Liquidity Mining Main Contract
+/// @title iZiSwap Liquidity Mining Main Contract
 contract DynamicRange is Base {
     // using Math for int24;
     using SafeERC20 for IERC20;
@@ -37,7 +37,7 @@ contract DynamicRange is Base {
     uint256 public totalTokenX;
     uint256 public totalTokenY;
 
-    /// @dev Contract of the uniV3 Nonfungible Position Manager.
+    /// @dev Contract of the iZiSwap Nonfungible Position Manager.
     address public iZiSwapLiquidityManager;
     address public iZiSwapFactory;
     address public swapPool;

@@ -7,7 +7,6 @@ const BigNumber = require("bignumber.js");
 //     node deployFixRangeTwoReward.js \
 //     'USDC' 'USDT' 400 \
 //     'iZi' 0.5 iZi_PROVIDER \
-//     'BIT' 0.05 YIN_PROVIDER \
 //     20160556	 200160556 \
 //     t-64 t64 \
 //     1 \
