@@ -3,6 +3,7 @@ pragma solidity ^0.8.4;
 
 import "../iZiSwap/interfaces.sol";
 import "./LogPowMath.sol";
+import "hardhat/console.sol";
 
 library iZiSwapOracle {
 
@@ -92,7 +93,6 @@ library iZiSwapOracle {
     {
         uint32[] memory secondsAgo = new uint32[](1);
         secondsAgo[0] = uint32(block.timestamp) - targetTimestamp;
-
         int56[] memory accPoints = IiZiSwapPool(pool).observe(secondsAgo);
         uint56 timeDelta = latestTimestamp - targetTimestamp;
 

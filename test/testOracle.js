@@ -116,6 +116,34 @@ function getAvgTick(obs0, obs1) {
     // return Number(tickDelta.div(blockDelta).toFixed(0, 3));
 }
 
+function getAvgTick(obs0, obs1) {
+    var blockDelta = BigNumber(obs1.timestamp).minus(obs0.timestamp);
+    var tickDelta = BigNumber(obs1.accPoint).minus(obs0.accPoint);
+    console.log('avg tick: ', Number(tickDelta.div(blockDelta).toFixed(10)))
+    const avg = tickDelta.div(blockDelta)
+    if (avg.gt(0)) {
+        return Number(avg.toFixed(0, 3))
+    } else {
+        return Number(avg.toFixed(0, 2))
+    }
+}
+
+function getTarget(obs0, obs1, targetTime) {
+    const rate = BigNumber(obs1.accPoint).minus(obs0.accPoint).div(BigNumber(obs1.timestamp).minus(obs0.timestamp))
+    const delta = BigNumber(targetTime).minus(obs0.timestamp)
+    let avg = rate.times(delta)
+    if (avg.gt(0)) {
+        avg = avg.toFixed(0, 3)
+    } else {
+        avg = avg.toFixed(0, 2)
+    }
+    const targetAccPoint = BigNumber(obs0.accPoint).plus(avg).toFixed(0)
+    return {
+        timestamp: targetTime,
+        accPoint: targetAccPoint
+    }
+}
+
 async function movePriceDown(swap, trader, tokenX, tokenY, boundaryPt) {
 
     await swap.connect(trader).swapX2Y({
@@ -385,6 +413,14 @@ describe("test uniswap price oracle", function () {
         var avgTick1 = getAvgTick(obs1, obs5);
         var avgTick2 = getAvgTick(obs2, obs5);
 
+        const blockNum = await ethers.provider.getBlockNumber();
+        const block = await ethers.provider.getBlock(blockNum);
+        const targetTime = block.timestamp - 7200
+
+        console.log('target time: ', targetTime)
+
+        const targetObs = getTarget(obs1, obs2, targetTime)
+        const stdAvgTick = getAvgTick(targetObs, obs5)
         console.log('oracle price: ', fix962Float(oracle.sqrtPriceX96));
         var oracleSqrtPrice = fix962Float(oracle.sqrtPriceX96);
         var sqrtPrice1 = Number(BigNumber(1.0001).pow(avgTick1).sqrt().toFixed(10));
@@ -399,6 +435,7 @@ describe("test uniswap price oracle", function () {
 
         expect(oracle.point).to.lessThanOrEqual(Math.max(avgTick1, avgTick2));
         expect(oracle.point).to.greaterThanOrEqual(Math.min(avgTick1, avgTick2));
+        expect(oracle.point).to.equal(stdAvgTick)
 
     }); 
 
@@ -484,6 +521,15 @@ describe("test uniswap price oracle", function () {
         var avgTick5 = getAvgTick(obs5, obs2);
         var avgTick6 = getAvgTick(obs6, obs2);
 
+        const blockNum = await ethers.provider.getBlockNumber();
+        const block = await ethers.provider.getBlock(blockNum);
+        const targetTime = block.timestamp - 7200
+
+        console.log('target time: ', targetTime)
+
+        const targetObs = getTarget(obs5, obs6, targetTime)
+        const stdAvgTick = getAvgTick(targetObs, obs2)
+
         console.log('avg tick 5: ', avgTick5);
         console.log('avg tick 6: ', avgTick6);
         console.log('oracle tick: ', oracle.point);
@@ -497,6 +543,7 @@ describe("test uniswap price oracle", function () {
 
         expect(oracle.point).to.lessThanOrEqual(Math.max(avgTick5, avgTick6));
         expect(oracle.point).to.greaterThanOrEqual(Math.min(avgTick5, avgTick6));
+        expect(oracle.point).to.equal(stdAvgTick)
 
     }); 
     it("num of observations reach cardinality, oldest before 2h ago, [oldest, latest] more than 1h, but latest is before 1h ago", async function() {
@@ -531,6 +578,13 @@ describe("test uniswap price oracle", function () {
         var obs2 = await getObservation(pool, 2);
         var obs5 = await getObservation(pool, 5);
         var obs6 = await getObservation(pool, 6);
+        const targetTime = obs2.timestamp - 3600
+
+        const targetObs = getTarget(obs5, obs6, targetTime)
+
+
+        console.log('obs5: ', obs5)
+        console.log('obs6: ', obs6)
 
         expect(obs2.init).to.equal(true);
         expect(obs5.init).to.equal(true);
@@ -538,6 +592,8 @@ describe("test uniswap price oracle", function () {
 
         var avgTick5 = getAvgTick(obs5, obs2);
         var avgTick6 = getAvgTick(obs6, obs2);
+
+        const stdAvgTick = getAvgTick(targetObs, obs2)
 
         console.log('avg tick 5: ', avgTick5);
         console.log('avg tick 6: ', avgTick6);
@@ -552,6 +608,7 @@ describe("test uniswap price oracle", function () {
 
         expect(oracle.point).to.lessThanOrEqual(Math.max(avgTick5, avgTick6));
         expect(oracle.point).to.greaterThanOrEqual(Math.min(avgTick5, avgTick6));
+        expect(oracle.point).to.equal(stdAvgTick)
 
     }); 
 });
