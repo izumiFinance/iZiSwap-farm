@@ -47,7 +47,6 @@ var para = {
     realDeploy: v[15]
 }
 
-
 async function attachToken(address) {
   var tokenFactory = await hardhat.ethers.getContractFactory("TestToken");
   var token = tokenFactory.attach(address);
@@ -107,8 +106,7 @@ async function main() {
   const Mining = await hardhat.ethers.getContractFactory("FixRange");
 
   para.rewardPerBlock0 = await getNumNoDecimal(para.rewardTokenAddress0, para.rewardPerBlock0);
-  para.rewardPerBlock1 = await getNumNoDecimal(para.rewardTokenAddress1, para.rewardPerBlock1);
-
+  
   var tickLower = para.priceLower0By1OrTickLower;
   var tickUpper = para.priceUpper0By1OrTickUpper;
 
