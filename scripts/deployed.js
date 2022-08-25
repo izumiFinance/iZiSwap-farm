@@ -35,6 +35,7 @@ const contracts = {
         FROYO: '0xe369fec23380f9f14ffd07a1dc4b7c1a9fdd81c9',
 	MNW: '0x8e596702b7e84907836776fddc56067b64147c8f',
 	MELT: '0x7eb35225995b097c84eF10501dD6E93A49bdFd63',
+	DMT: '0x09CdC7E87ABd416246F1015B08B4463Abdda00B4',
     },
     ethereum: {
 	
