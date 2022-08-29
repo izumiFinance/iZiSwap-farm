@@ -43,17 +43,17 @@ var para = {
     rewardTokenAddress1: contracts[net][v[10]],
     rewardPerBlock1: v[11],
     provider1Symbol: v[12],
-    provider1: getProviderAddress(v[13]),
+    provider1: getProviderAddress(v[12]),
 
-    startBlock: v[14],
-    endBlock: v[15],
+    startBlock: v[13],
+    endBlock: v[14],
 
-    pcLeftScale: v[16],
-    pcRightScale: v[17],
+    pcLeftScale: v[15],
+    pcRightScale: v[16],
 
-    boost: v[18],
-    feeChargePercent: v[19],
-    chargeReceiver: getProviderAddress(v[20]),
+    boost: v[17],
+    feeChargePercent: v[18],
+    chargeReceiver: getProviderAddress(v[19]),
 }
 
 
