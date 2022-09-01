@@ -84,6 +84,8 @@ abstract contract Base is Ownable, Multicall, ReentrancyGuard {
 
     address public chargeReceiver;
 
+    string public contractType;
+
     /// @notice emit if user successfully deposit
     /// @param user user
     /// @param tokenId id of mining (same as iZiSwap nft token id)
@@ -123,7 +125,13 @@ abstract contract Base is Ownable, Multicall, ReentrancyGuard {
     }
 
     constructor(
-        uint24 _feeChargePercent, address _iZiSwapLiquidityManager, address tokenA, address tokenB, uint24 fee, address _chargeReceiver
+        uint24 _feeChargePercent, 
+        address _iZiSwapLiquidityManager, 
+        address tokenA, 
+        address tokenB, 
+        uint24 fee, 
+        address _chargeReceiver,
+        string memory _contractType
     ) {
         require(_feeChargePercent <= 100, "charge percent <= 100");
         feeRemainPercent = 100 - _feeChargePercent;
@@ -132,6 +140,7 @@ abstract contract Base is Ownable, Multicall, ReentrancyGuard {
         // receiver to receive charged iZiSwap fee
         chargeReceiver = _chargeReceiver;
         _setRewardPool(tokenA, tokenB, fee);
+        contractType = _contractType;
     }
 
     /// @notice Transfers ETH to the recipient address

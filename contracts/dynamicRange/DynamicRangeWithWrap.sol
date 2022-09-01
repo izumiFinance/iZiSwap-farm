@@ -96,7 +96,8 @@ contract DynamicRangeWithWrap is BaseWithWrap {
         poolParams.fee,
         poolParams.tokenXIsWrap,
         poolParams.tokenYIsWrap,
-        _chargeReceiver
+        _chargeReceiver,
+        "DynamicRange"
     ) {
         iZiSwapLiquidityManager = poolParams.iZiSwapLiquidityManager;
 

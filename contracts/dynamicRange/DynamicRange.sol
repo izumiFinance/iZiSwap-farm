@@ -86,7 +86,7 @@ contract DynamicRange is Base {
         address _chargeReceiver,
         int24 _pointRangeLeft,
         int24 _pointRangeRight
-    ) Base (feeChargePercent, poolParams.iZiSwapLiquidityManager, poolParams.tokenX, poolParams.tokenY, poolParams.fee, _chargeReceiver) {
+    ) Base (feeChargePercent, poolParams.iZiSwapLiquidityManager, poolParams.tokenX, poolParams.tokenY, poolParams.fee, _chargeReceiver, "DynamicRange") {
         iZiSwapLiquidityManager = poolParams.iZiSwapLiquidityManager;
 
         require(rewardPool.tokenX < rewardPool.tokenY, "TOKEN0 < TOKEN1 NOT MATCH");

@@ -78,6 +78,8 @@ abstract contract BaseWithWrap is Ownable, Multicall, ReentrancyGuard {
     uint256 public totalFeeChargedX;
     uint256 public totalFeeChargedY;
 
+    string public contractType;
+
 
     struct PoolInfo {
         address tokenX;
@@ -142,7 +144,8 @@ abstract contract BaseWithWrap is Ownable, Multicall, ReentrancyGuard {
         uint24 fee, 
         bool tokenAIsWrap,
         bool tokenBIsWrap,
-        address _chargeReceiver
+        address _chargeReceiver,
+        string memory _contractType
     ) {
         require(_feeChargePercent <= 100, "charge percent <= 100");
         feeRemainPercent = 100 - _feeChargePercent;
@@ -151,6 +154,7 @@ abstract contract BaseWithWrap is Ownable, Multicall, ReentrancyGuard {
         // receiver to receive charged iZiSwap fee
         chargeReceiver = _chargeReceiver;
         _setRewardPool(tokenA, tokenB, fee, tokenAIsWrap, tokenBIsWrap);
+        contractType = _contractType;
     }
 
     /// @notice Transfers ETH to the recipient address

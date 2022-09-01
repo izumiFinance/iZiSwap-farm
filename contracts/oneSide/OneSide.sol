@@ -94,7 +94,8 @@ contract OneSide is Base {
         poolParams.oneSideTokenAddr,
         poolParams.lockTokenAddr,
         poolParams.fee, 
-        _chargeReceiver
+        _chargeReceiver,
+        "OneSide"
     ) {
         iZiSwapLiquidityManager = poolParams.iZiSwapLiquidityManager;
         // locking eth is not support
