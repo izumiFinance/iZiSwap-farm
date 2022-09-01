@@ -29,8 +29,8 @@ var para = {
     token0Address: contracts[net][v[2]],
     token1Symbol: v[3],
     token1Address: contracts[net][v[3]],
-    token0IsWrap: v[4],
-    token1IsWrap: v[5],
+    token0IsWrap: Number(v[4]),
+    token1IsWrap: Number(v[5]),
     fee: v[6],
 
     rewardTokenSymbol0: v[7],
