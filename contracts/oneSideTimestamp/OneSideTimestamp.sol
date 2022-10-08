@@ -17,8 +17,8 @@ import "../libraries/iZiSwapCallingParams.sol";
 import "../base/BaseTimestamp.sol";
 
 
-/// @title iZiSwap Liquidity Mining Main Contract
-contract DynamicRangeTimestamp is BaseTimestamp {
+/// @title Uniswap V3 Liquidity Mining Main Contract
+contract OneSideTimestamp is BaseTimestamp {
     // using Math for int24;
     using SafeERC20 for IERC20;
     using EnumerableSet for EnumerableSet.UintSet;
@@ -28,30 +28,31 @@ contract DynamicRangeTimestamp is BaseTimestamp {
     int24 internal constant TICK_MAX = 500000;
     int24 internal constant TICK_MIN = -500000;
 
-    int24 public pointRangeLeft;
-    int24 public pointRangeRight;
+    int24 public tickRangeLong;
 
-    bool public tokenXIsETH;
-    bool public tokenYIsETH;
+    bool public oneSideIsETH;
 
-    uint256 public totalTokenX;
-    uint256 public totalTokenY;
+    address public oneSideToken;
+    address public lockToken;
 
-    /// @dev Contract of the iZiSwap Nonfungible Position Manager.
     address public iZiSwapLiquidityManager;
     address public iZiSwapFactory;
     address public swapPool;
 
+    uint256 public lockBoostMultiplier;
+    /// @dev Current total lock token
+    uint256 public totalLock;
+
     /// @dev Record the status for a certain token for the last touched time.
     struct TokenStatus {
         uint256 nftId;
+        // bool isDepositWithNFT;
+        uint128 iZiSwapLiquidity;
+        uint256 lockAmount;
         uint256 vLiquidity;
-        uint256 iZiSwapLiquidity;
         uint256 validVLiquidity;
         uint256 nIZI;
         uint256 lastTouchTime;
-        uint256 amountX;
-        uint256 amountY;
         uint256[] lastTouchAccRewardPerShare;
     }
 
@@ -72,39 +73,48 @@ contract DynamicRangeTimestamp is BaseTimestamp {
 
     struct PoolParams {
         address iZiSwapLiquidityManager;
-        address tokenX;
-        address tokenY;
+        address oneSideTokenAddr;
+        address lockTokenAddr;
         uint24 fee;
     }
+
     constructor(
         PoolParams memory poolParams,
         RewardInfo[] memory _rewardInfos,
+        uint256 _lockBoostMultiplier,
         address iziTokenAddr,
         uint256 _startTime,
         uint256 _endTime,
+        int24 _tickRangeLong,
         uint24 feeChargePercent,
-        address _chargeReceiver,
-        int24 _pointRangeLeft,
-        int24 _pointRangeRight
-    ) BaseTimestamp (feeChargePercent, poolParams.iZiSwapLiquidityManager, poolParams.tokenX, poolParams.tokenY, poolParams.fee, _chargeReceiver, "DynamicRangeTimestamp") {
+        address _chargeReceiver
+    ) BaseTimestamp (
+        feeChargePercent, 
+        poolParams.iZiSwapLiquidityManager, 
+        poolParams.oneSideTokenAddr,
+        poolParams.lockTokenAddr,
+        poolParams.fee, 
+        _chargeReceiver,
+        "OneSideTimestamp"
+    ) {
         iZiSwapLiquidityManager = poolParams.iZiSwapLiquidityManager;
-
-        require(rewardPool.tokenX < rewardPool.tokenY, "TOKEN0 < TOKEN1 NOT MATCH");
-
+        // locking eth is not support
+        require(weth != poolParams.lockTokenAddr, "WETH NOT SUPPORT");
         iZiSwapFactory = IiZiSwapLiquidityManager(iZiSwapLiquidityManager).factory();
 
-        // weth has been marked in the MiningBase constructor
-        tokenXIsETH = (rewardPool.tokenX == weth);
-        tokenYIsETH = (rewardPool.tokenY == weth);
+        oneSideToken = poolParams.oneSideTokenAddr;
 
-        IERC20(rewardPool.tokenX).safeApprove(iZiSwapLiquidityManager, type(uint256).max);
-        IERC20(rewardPool.tokenY).safeApprove(iZiSwapLiquidityManager, type(uint256).max);
+        oneSideIsETH = (oneSideToken == weth);
+        lockToken = poolParams.lockTokenAddr;
 
-        swapPool = IiZiSwapFactory(iZiSwapFactory).pool(rewardPool.tokenX, rewardPool.tokenY, rewardPool.fee);
-        require(swapPool != address(0), "NO iZiSwap POOL");
+        IERC20(oneSideToken).safeApprove(iZiSwapLiquidityManager, type(uint256).max);
 
-        // check cardinality to prevent sandwitch attach
-        require(iZiSwapOracle.getState(swapPool).observationNextQueueLen >= 50, "CAR");
+        swapPool = IiZiSwapFactory(iZiSwapFactory).pool(
+            lockToken,
+            oneSideToken,
+            poolParams.fee
+        );
+        require(swapPool != address(0), "NO iZi POOL");
 
         rewardInfosLen = _rewardInfos.length;
         require(rewardInfosLen > 0, "NO REWARD");
@@ -112,9 +122,14 @@ contract DynamicRangeTimestamp is BaseTimestamp {
 
         for (uint256 i = 0; i < rewardInfosLen; i++) {
             rewardInfos[i] = _rewardInfos[i];
-            // we could not believe accRewardPerShare from constructor args
+            // we cannot believe accRewardPerShare from constructor params
             rewardInfos[i].accRewardPerShare = 0;
         }
+        //  lock boost multiplier is at most 3
+        require(_lockBoostMultiplier > 0, "M>0");
+        require(_lockBoostMultiplier < 4, "M<4");
+
+        lockBoostMultiplier = _lockBoostMultiplier;
 
         // iziTokenAddr == 0 means not boost
         iziToken = IERC20(iziTokenAddr);
@@ -122,16 +137,15 @@ contract DynamicRangeTimestamp is BaseTimestamp {
         startTime = _startTime;
         endTime = _endTime;
 
+        require(_tickRangeLong > 0, 'tl > 0');
+        require(_tickRangeLong <= 23027, 'price times < 10');
+
+        tickRangeLong = _tickRangeLong;
+
         lastTouchTime = startTime;
 
         totalVLiquidity = 0;
         totalNIZI = 0;
-
-        totalTokenX = 0;
-        totalTokenY = 0;
-
-        pointRangeLeft = _pointRangeLeft;
-        pointRangeRight = _pointRangeRight;
     }
 
     /// @notice Get the overall info for the mining contract.
@@ -139,32 +153,90 @@ contract DynamicRangeTimestamp is BaseTimestamp {
         external
         view
         returns (
-            address tokenX_,
-            address tokenY_,
+            address oneSideToken_,
+            address lockToken_,
             uint24 fee_,
+            uint256 lockBoostMultiplier_,
             address iziTokenAddr_,
             uint256 lastTouchTime_,
             uint256 totalVLiquidity_,
-            uint256 totalTokenX_,
-            uint256 totalTokenY_,
+            uint256 totalLock_,
             uint256 totalNIZI_,
             uint256 startTime_,
             uint256 endTime_
         )
     {
         return (
-            rewardPool.tokenX,
-            rewardPool.tokenY,
+            oneSideToken,
+            lockToken,
             rewardPool.fee,
+            lockBoostMultiplier,
             address(iziToken),
             lastTouchTime,
             totalVLiquidity,
-            totalTokenX,
-            totalTokenY,
+            totalLock,
             totalNIZI,
             startTime,
             endTime
         );
+    }
+
+    /// @dev compute amount of lockToken
+    /// @param sqrtPriceX96 sqrtprice value viewed from uniswap pool
+    /// @param oneSideAmount amount of oneSideToken user would deposit to swap pool
+    ///    or amount computed corresponding to deposited uniswap NFT
+    /// @return lockAmount amount of lockToken
+    function _getLockAmount(uint160 sqrtPriceX96, uint256 oneSideAmount)
+        private
+        view
+        returns (uint256 lockAmount)
+    {
+        // oneSideAmount is less than Q96, checked before
+        uint256 precision = FixedPoints.Q96;
+        uint256 sqrtPriceXP = sqrtPriceX96;
+
+        // if price > 1, we discard the useless precision
+        if (sqrtPriceX96 > FixedPoints.Q96) {
+            precision = FixedPoints.Q32;
+            // sqrtPriceXP <= Q96 after >> operation
+            sqrtPriceXP = (sqrtPriceXP >> 64);
+        }
+        // priceXP < Q160 if price >= 1
+        // priceXP < Q96  if price < 1
+        // if sqrtPrice < 1, sqrtPriceXP < 2^(96)
+        // if sqrtPrice > 1, precision of sqrtPriceXP is 32, sqrtPriceXP < 2^(160-64)
+        // uint256 is enough for sqrtPriceXP ** 2
+        uint256 priceXP = (sqrtPriceXP * sqrtPriceXP) / precision;
+    
+        if (priceXP > 0) {
+            if (oneSideToken < lockToken) {
+                // price is lockToken / oneSideToken
+                // oneSideAmount < Q96
+                // priceXP < Q160
+                // oneSideAmount * priceXP < Q256, uint256 is enough
+                lockAmount = (oneSideAmount * priceXP) / precision;
+            } else {
+                // oneSideAmount < Q96
+                // precision < Q96
+                // uint256 is enough for oneSideAmount * precision
+                lockAmount = (oneSideAmount * precision) / priceXP;
+            }
+        } else {
+             // in this case sqrtPriceXP <= Q48, precision = Q96
+            if (oneSideToken < lockToken) {
+                // price is lockToken / oneSideToken
+                // lockAmount = oneSideAmount * sqrtPriceXP * sqrtPriceXP / precision / precision;
+                // the above expression will always get 0
+                lockAmount = 0;
+            } else {
+                lockAmount = oneSideAmount * precision / sqrtPriceXP / sqrtPriceXP; 
+                // lockAmount is always < Q128, since sqrtPriceXP > Q32
+                // we still add the require statement to double check
+                require(lockAmount < FixedPoints.Q160, "TOO MUCH LOCK");
+                lockAmount *= precision;
+            }
+        }
+        require(lockAmount > 0, "LOCK 0");
     }
 
     /// @notice new a token status when touched.
@@ -174,7 +246,8 @@ contract DynamicRangeTimestamp is BaseTimestamp {
 
         t.lastTouchTime = lastTouchTime;
         t.lastTouchAccRewardPerShare = new uint256[](rewardInfosLen);
-        // prevent user collect reward generated before creating this token status
+        // mark lastTouchAccRewardPerShare as current accRewardPerShare
+        // to prevent collect reward generated before mining
         for (uint256 i = 0; i < rewardInfosLen; i++) {
             t.lastTouchAccRewardPerShare[i] = rewardInfos[i].accRewardPerShare;
         }
@@ -193,7 +266,8 @@ contract DynamicRangeTimestamp is BaseTimestamp {
         t.nIZI = nIZI;
 
         t.lastTouchTime = lastTouchTime;
-        // prevent double collect
+        // mark lastTouchAccRewardPerShare as current accRewardPerShare
+        // to prevent second-collect reward generated before update
         for (uint256 i = 0; i < rewardInfosLen; i++) {
             t.lastTouchAccRewardPerShare[i] = rewardInfos[i].accRewardPerShare;
         }
@@ -211,36 +285,56 @@ contract DynamicRangeTimestamp is BaseTimestamp {
         return Math.min(iziVLiquidity, vLiquidity);
     }
 
-    /// @dev compute point range converted from [oraclePrice / 2, oraclePrice * 2]
-    /// @param stdPoint, (leftPoint + rightPoint) / 2 should not too differ from stdPoint
+    /// @dev get sqrtPrice of pool(oneSideToken/tokenSwap/fee)
+    ///    and compute Point range converted from [TICK_MIN, PriceUni] or [PriceUni, TICK_MAX]
+    /// @return sqrtPriceX96 current sqrtprice value viewed from uniswap pool, is a 96-bit fixed point number
+    ///    note this value might mean price of lockToken/oneSideToken (if oneSideToken < lockToken)
+    ///    or price of oneSideToken / lockToken (if oneSideToken > lockToken)
     /// @return leftPoint
     /// @return rightPoint
-    function _getPointRange(int24 stdPoint)
+    function _getPriceAndPointRange(int24 stdPoint)
         private
         view
         returns (
+            uint160 sqrtPriceX96,
             int24 leftPoint,
             int24 rightPoint
         )
     {
-        (int24 avgPoint, , int24 currentPoint, ) = swapPool.getAvgPointPriceWithin2Hour();
+        (int24 avgPoint, uint160 avgSqrtPriceX96, int24 currPoint, ) = swapPool
+            .getAvgPointPriceWithin2Hour();
+        
         int56 delta = int56(avgPoint) - int56(stdPoint);
         delta = (delta >= 0) ? delta: -delta;
-        require(delta <= 2500, "TICK BIAS AS");
-        delta = int56(currentPoint) - int56(stdPoint);
+        require(delta <= 500, "TICK BIAS AS");
+        delta = int56(currPoint) - int56(stdPoint);
         delta = (delta >= 0) ? delta: -delta;
-        require(delta <= 2500, "TICK BIAS CS");
-        // pointSpacing != 0 is ensured before deploy this contract
-        int24 pointDelta = IiZiSwapFactory(iZiSwapFactory).fee2pointDelta(rewardPool.fee);
+        require(delta <= 500, "TICK BIAS CS");
 
-        leftPoint = Math.max(avgPoint - pointRangeLeft, TICK_MIN);
-        rightPoint = Math.min(avgPoint + pointRangeRight, TICK_MAX);
-        // round down to times of pointDelta
-        leftPoint = Math.tickFloor(leftPoint, pointDelta);
-        // round up to times of pointDelta
-        rightPoint = Math.tickUpper(rightPoint, pointDelta);
-        // double check
+        int24 pointDelta = IiZiSwapFactory(iZiSwapFactory).fee2pointDelta(
+            rewardPool.fee
+        );
+        if (oneSideToken < lockToken) {
+            // price is lockToken / oneSideToken
+            // oneSideToken is X
+            leftPoint = Math.max(currPoint + 1, avgPoint);
+            // round up to times of pointDelta
+            // iziswap only receive Point which is times of pointDelta
+            leftPoint = Math.tickUpper(leftPoint, pointDelta);
+            rightPoint = Math.min(leftPoint + tickRangeLong, TICK_MAX);
+            rightPoint = Math.tickUpper(rightPoint, pointDelta);
+        } else {
+            // price is oneSideToken / lockToken
+            // oneSideToken is Y
+            rightPoint = Math.min(currPoint, avgPoint);
+            // round down to times of pointDelta
+            // iziswap only receive Point which is times of pointDelta
+            rightPoint = Math.tickFloor(rightPoint, pointDelta);
+            leftPoint = Math.max(rightPoint - tickRangeLong, TICK_MIN);
+            leftPoint = Math.tickFloor(leftPoint, pointDelta);
+        }
         require(leftPoint < rightPoint, "L<R");
+        sqrtPriceX96 = avgSqrtPriceX96;
     }
 
     function getOraclePrice()
@@ -254,95 +348,97 @@ contract DynamicRangeTimestamp is BaseTimestamp {
         (avgPoint, avgSqrtPriceX96, , ) = swapPool.getAvgPointPriceWithin2Hour();
     }
 
-    /// @notice Transfers ETH to the recipient address
-    /// @dev Fails with `STE`
-    /// @param to The destination of the transfer
-    /// @param value The value to be transferred
-    function safeTransferETH(address to, uint256 value) internal {
-        (bool success, ) = to.call{value: value}(new bytes(0));
-        require(success, "STE");
-    }
-
-    function _recvTokenFromUser(address token, address user, uint256 amount) private {
-        if (amount == 0) {
-            return;
-        }
-        if (token == weth) {
-            // the other token must not be weth
-            require(msg.value >= amount, "ETHER INSUFFICIENT");
+    function depositWithoneSideToken(
+        uint128 oneSideAmount,
+        uint256 numIZI,
+        int24 stdPoint,
+        uint256 deadline
+    ) external payable nonReentrant {
+        require(oneSideAmount >= 1e7, "TOKENUNI AMOUNT TOO SMALL");
+        require(oneSideAmount < FixedPoints.Q96 / 3, "TOKENUNI AMOUNT TOO LARGE");
+        if (oneSideIsETH) {
+            require(msg.value >= oneSideAmount, "ETHER INSUFFICIENT");
         } else {
-            // receive token(not weth) from user
-            IERC20(token).safeTransferFrom(
-                user,
+            IERC20(oneSideToken).safeTransferFrom(
+                msg.sender,
                 address(this),
-                amount
+                oneSideAmount
             );
         }
-    }
-
-    function deposit(
-        uint128 amountXDesired,
-        uint128 amountYDesired,
-        uint256 numIZI,
-        int24 stdPoint
-    ) external payable nonReentrant {
-        _recvTokenFromUser(rewardPool.tokenX, msg.sender, amountXDesired);
-        _recvTokenFromUser(rewardPool.tokenY, msg.sender, amountYDesired);
-        (int24 leftPoint, int24 rightPoint) = _getPointRange(stdPoint);
+        (
+            uint160 sqrtPriceX96,
+            int24 leftPoint,
+            int24 rightPoint
+        ) = _getPriceAndPointRange(stdPoint);
 
         TokenStatus memory newTokenStatus;
 
         IiZiSwapLiquidityManager.MintParam
-            memory mintParam = iZiSwapCallingParams.mintParams(
-                rewardPool.tokenX, rewardPool.tokenY, rewardPool.fee, amountXDesired, amountYDesired, leftPoint, rightPoint, type(uint256).max
+            memory iZiSwapParams = iZiSwapCallingParams.mintParams(
+                oneSideToken, lockToken, rewardPool.fee, oneSideAmount, 0, leftPoint, rightPoint, deadline
             );
-        uint256 actualAmountX; 
-        uint256 actualAmountY;
-        (
-            newTokenStatus.nftId,
-            newTokenStatus.iZiSwapLiquidity,
-            actualAmountX,
-            actualAmountY
-        ) = IiZiSwapLiquidityManager(iZiSwapLiquidityManager).mint{
-            value: msg.value
-        }(mintParam);
+        uint256 actualOneSideAmount;
 
-        require(newTokenStatus.iZiSwapLiquidity > 1e7, "liquidity too small!");
-        newTokenStatus.vLiquidity = newTokenStatus.iZiSwapLiquidity / 1e6;
+        if (oneSideToken < lockToken) {
+            (
+                newTokenStatus.nftId,
+                newTokenStatus.iZiSwapLiquidity,
+                actualOneSideAmount,
 
-        totalTokenX += actualAmountX;
-        totalTokenY += actualAmountY;
-        newTokenStatus.amountX = actualAmountX;
-        newTokenStatus.amountY = actualAmountY;
+            ) = IiZiSwapLiquidityManager(iZiSwapLiquidityManager).mint{
+                value: msg.value
+            }(iZiSwapParams);
+        } else {
+            (
+                newTokenStatus.nftId,
+                newTokenStatus.iZiSwapLiquidity,
+                ,
+                actualOneSideAmount
+            ) = IiZiSwapLiquidityManager(iZiSwapLiquidityManager).mint{
+                value: msg.value
+            }(iZiSwapParams);
+        }
 
         // mark owners and append to list
         owners[newTokenStatus.nftId] = msg.sender;
         bool res = tokenIds[msg.sender].add(newTokenStatus.nftId);
         require(res);
 
-        // refund tokens to user
-        IiZiSwapLiquidityManager(iZiSwapLiquidityManager).refundETH();
-        if (tokenXIsETH) {
-            if (actualAmountX < msg.value) {
-                safeTransferETH(msg.sender, msg.value - actualAmountX);
+        if (oneSideIsETH) {
+            if (actualOneSideAmount < msg.value) {
+                // refund oneSideToken
+                // from uniswap to this
+                IiZiSwapLiquidityManager(iZiSwapLiquidityManager).refundETH();
+                // from this to msg.sender
+                if (address(this).balance > 0)
+                    _safeTransferETH(msg.sender, address(this).balance);
             }
         } else {
-            if (actualAmountX < amountXDesired) {
-                IERC20(rewardPool.tokenX).safeTransfer(msg.sender, amountXDesired - actualAmountX);
-            }
-        }
-        if (tokenYIsETH) {
-            if (actualAmountY < msg.value) {
-                safeTransferETH(msg.sender, msg.value - actualAmountY);
-            }
-        } else {
-            if (actualAmountY < amountYDesired) {
-                IERC20(rewardPool.tokenY).safeTransfer(msg.sender, amountYDesired - actualAmountY);
+            if (actualOneSideAmount < oneSideAmount) {
+                // refund oneSideToken
+                IERC20(oneSideToken).safeTransfer(
+                    msg.sender,
+                    oneSideAmount - actualOneSideAmount
+                );
             }
         }
 
         _updateGlobalStatus();
+        newTokenStatus.vLiquidity = actualOneSideAmount * lockBoostMultiplier;
+        newTokenStatus.lockAmount = _getLockAmount(
+            sqrtPriceX96,
+            newTokenStatus.vLiquidity
+        );
 
+        // make vLiquidity lower
+        newTokenStatus.vLiquidity = newTokenStatus.vLiquidity / 1e6;
+
+        IERC20(lockToken).safeTransferFrom(
+            msg.sender,
+            address(this),
+            newTokenStatus.lockAmount
+        );
+        totalLock += newTokenStatus.lockAmount;
         _updateVLiquidity(newTokenStatus.vLiquidity, true);
 
         newTokenStatus.nIZI = numIZI;
@@ -359,7 +455,11 @@ contract DynamicRangeTimestamp is BaseTimestamp {
         _newTokenStatus(newTokenStatus);
         if (newTokenStatus.nIZI > 0) {
             // lock izi in this contract
-            _recvTokenFromUser(address(iziToken), msg.sender, newTokenStatus.nIZI);
+            iziToken.safeTransferFrom(
+                msg.sender,
+                address(this),
+                newTokenStatus.nIZI
+            );
         }
 
         emit Deposit(msg.sender, newTokenStatus.nftId, newTokenStatus.nIZI);
@@ -377,8 +477,6 @@ contract DynamicRangeTimestamp is BaseTimestamp {
             _collectReward(tokenId);
         }
         TokenStatus storage t = tokenStatus[tokenId];
-        totalTokenX -= t.amountX;
-        totalTokenY -= t.amountY;
 
         _updateVLiquidity(t.vLiquidity, false);
         if (t.nIZI > 0) {
@@ -386,15 +484,23 @@ contract DynamicRangeTimestamp is BaseTimestamp {
             // refund iZi to user
             iziToken.safeTransfer(msg.sender, t.nIZI);
         }
+        if (t.lockAmount > 0) {
+            // refund lockToken to user
+            IERC20(lockToken).safeTransfer(msg.sender, t.lockAmount);
+            totalLock -= t.lockAmount;
+        }
+
+        // first charge and send remain fee from uniswap to user
         uint256 amountX;
         uint256 amountY;
-
         try
-            // first charge and send remain fee from iZiSwap to user
             IiZiSwapLiquidityManager(
                 iZiSwapLiquidityManager
             ).collect(
-                address(this), tokenId, type(uint128).max, type(uint128).max
+                address(this),
+                tokenId,
+                type(uint128).max,
+                type(uint128).max
             ) returns (uint256 ax, uint256 ay)
         {
             amountX = ax;
@@ -410,14 +516,17 @@ contract DynamicRangeTimestamp is BaseTimestamp {
         totalFeeChargedX += amountX - refundAmountX;
         totalFeeChargedY += amountY - refundAmountY;
 
-        // then decrease and collect from iZiSwap
+        // then decrease and collect from uniswap
         IiZiSwapLiquidityManager(iZiSwapLiquidityManager).decLiquidity(
             tokenId, uint128(t.iZiSwapLiquidity), 0, 0, type(uint256).max
         );
         (amountX, amountY) = IiZiSwapLiquidityManager(
             iZiSwapLiquidityManager
         ).collect(
-            address(this), tokenId, type(uint128).max, type(uint128).max
+            address(this),
+            tokenId,
+            type(uint128).max,
+            type(uint128).max
         );
         _safeTransferToken(rewardPool.tokenX, msg.sender, amountX);
         _safeTransferToken(rewardPool.tokenY, msg.sender, amountY);
@@ -472,6 +581,11 @@ contract DynamicRangeTimestamp is BaseTimestamp {
             // we should ensure nft refund to user
             // omit the case when transfer() returns false unexpectedly
             iziToken.transfer(owner, t.nIZI);
+        }
+        if (t.lockAmount > 0) {
+            // we should ensure nft refund to user
+            // omit the case when transfer() returns false unexpectedly
+            IERC20(lockToken).transfer(owner, t.lockAmount);
         }
         // makesure user cannot withdraw/depositIZI or collect reward on this nft
         owners[tokenId] = address(0);
