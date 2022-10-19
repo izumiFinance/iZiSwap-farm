@@ -14,11 +14,11 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "../libraries/iZiSwapOracle.sol";
 import "../libraries/iZiSwapCallingParams.sol";
 
-import "../base/BaseWithWrap.sol";
+import "../base/BaseWithWrapTimestamp.sol";
 
 
 /// @title iZiSwap Liquidity Mining Main Contract
-contract DynamicRangeWithWrap is BaseWithWrap {
+contract DynamicRangeWithWrapTimestamp is BaseWithWrapTimestamp {
     // using Math for int24;
     using SafeERC20 for IERC20;
     using EnumerableSet for EnumerableSet.UintSet;
@@ -49,7 +49,7 @@ contract DynamicRangeWithWrap is BaseWithWrap {
         uint256 iZiSwapLiquidity;
         uint256 validVLiquidity;
         uint256 nIZI;
-        uint256 lastTouchBlock;
+        uint256 lastTouchTime;
         uint256 amountX;
         uint256 amountY;
         uint256[] lastTouchAccRewardPerShare;
@@ -82,13 +82,13 @@ contract DynamicRangeWithWrap is BaseWithWrap {
         PoolParams memory poolParams,
         RewardInfo[] memory _rewardInfos,
         address iziTokenAddr,
-        uint256 _startBlock,
-        uint256 _endBlock,
+        uint256 _startTime,
+        uint256 _endTime,
         uint24 feeChargePercent,
         address _chargeReceiver,
         int24 _pointRangeLeft,
         int24 _pointRangeRight
-    ) BaseWithWrap (
+    ) BaseWithWrapTimestamp (
         feeChargePercent, 
         poolParams.iZiSwapLiquidityManager, 
         poolParams.tokenX, 
@@ -97,7 +97,7 @@ contract DynamicRangeWithWrap is BaseWithWrap {
         poolParams.tokenXIsWrap,
         poolParams.tokenYIsWrap,
         _chargeReceiver,
-        "DynamicRangeWithWrap"
+        "DynamicRangeWithWrapTimestamp"
     ) {
         iZiSwapLiquidityManager = poolParams.iZiSwapLiquidityManager;
 
@@ -131,10 +131,10 @@ contract DynamicRangeWithWrap is BaseWithWrap {
         // iziTokenAddr == 0 means not boost
         iziToken = IERC20(iziTokenAddr);
 
-        startBlock = _startBlock;
-        endBlock = _endBlock;
+        startTime = _startTime;
+        endTime = _endTime;
 
-        lastTouchBlock = startBlock;
+        lastTouchTime = startTime;
 
         totalVLiquidity = 0;
         totalNIZI = 0;
@@ -155,13 +155,13 @@ contract DynamicRangeWithWrap is BaseWithWrap {
             address tokenY_,
             uint24 fee_,
             address iziTokenAddr_,
-            uint256 lastTouchBlock_,
+            uint256 lastTouchTime_,
             uint256 totalVLiquidity_,
             uint256 totalTokenX_,
             uint256 totalTokenY_,
             uint256 totalNIZI_,
-            uint256 startBlock_,
-            uint256 endBlock_
+            uint256 startTime_,
+            uint256 endTime_
         )
     {
         return (
@@ -169,13 +169,13 @@ contract DynamicRangeWithWrap is BaseWithWrap {
             rewardPool.tokenY,
             rewardPool.fee,
             address(iziToken),
-            lastTouchBlock,
+            lastTouchTime,
             totalVLiquidity,
             totalTokenX,
             totalTokenY,
             totalNIZI,
-            startBlock,
-            endBlock
+            startTime,
+            endTime
         );
     }
 
@@ -184,7 +184,7 @@ contract DynamicRangeWithWrap is BaseWithWrap {
         tokenStatus[newTokenStatus.nftId] = newTokenStatus;
         TokenStatus storage t = tokenStatus[newTokenStatus.nftId];
 
-        t.lastTouchBlock = lastTouchBlock;
+        t.lastTouchTime = lastTouchTime;
         t.lastTouchAccRewardPerShare = new uint256[](rewardInfosLen);
         // prevent user collect reward generated before creating this token status
         for (uint256 i = 0; i < rewardInfosLen; i++) {
@@ -204,7 +204,7 @@ contract DynamicRangeWithWrap is BaseWithWrap {
         t.validVLiquidity = validVLiquidity;
         t.nIZI = nIZI;
 
-        t.lastTouchBlock = lastTouchBlock;
+        t.lastTouchTime = lastTouchTime;
         // prevent double collect
         for (uint256 i = 0; i < rewardInfosLen; i++) {
             t.lastTouchAccRewardPerShare[i] = rewardInfos[i].accRewardPerShare;
