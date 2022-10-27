@@ -42,6 +42,8 @@ contract DynamicRangeWithWrap is BaseWithWrap {
     address public iZiSwapFactory;
     address public swapPool;
 
+    bool public isDeposit;
+
     /// @dev Record the status for a certain token for the last touched time.
     struct TokenStatus {
         uint256 nftId;
@@ -298,8 +300,10 @@ contract DynamicRangeWithWrap is BaseWithWrap {
         uint256 numIZI,
         int24 stdPoint
     ) external payable nonReentrant {
+        isDeposit = true;
         uint128 amountXLim = uint128(_recvTokenFromUser(rewardPool.tokenX, rewardPool.tokenXIsWrap, amountXDesired));
         uint128 amountYLim = uint128(_recvTokenFromUser(rewardPool.tokenY, rewardPool.tokenYIsWrap, amountYDesired));
+        delete isDeposit;
         (int24 leftPoint, int24 rightPoint) = _getPointRange(stdPoint);
 
         TokenStatus memory newTokenStatus;
