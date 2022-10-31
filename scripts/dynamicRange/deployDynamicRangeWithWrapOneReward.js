@@ -104,7 +104,6 @@ async function main() {
   const Mining = await hardhat.ethers.getContractFactory("DynamicRangeWithWrap");
 
   para.rewardPerBlock0 = await getNumNoDecimal(para.rewardTokenAddress0, para.rewardPerBlock0);
-  para.rewardPerBlock1 = await getNumNoDecimal(para.rewardTokenAddress1, para.rewardPerBlock1);
   console.log("Deploy DynamicRangeWithWrap Contract: %s/%s", para.token0Symbol,  para.token1Symbol);
   console.log("Paramters: ");
   for ( var i in para) { console.log("    " + i + ": " + para[i]); }
