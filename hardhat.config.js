@@ -76,7 +76,11 @@ module.exports = {
 	url: 'https://bsc-dataseed.binance.org/',
         accounts: [sk],
 	gasPrice: 5000000000,
-    }
+    },
+    auroraTest: {
+        url: 'https://testnet.aurora.dev',
+        accounts: [sk],
+    },
   },
   docgen: {
     path: './docs',
