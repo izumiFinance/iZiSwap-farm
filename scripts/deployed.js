@@ -77,6 +77,8 @@ const contracts = {
         slETH: '0xdf6964c7ccfabaace7c3f918b795fa4a894589c8',
         TLOS: '0xb6C53431608E626AC81a9776ac3e999c5556717c',
         HALO: '0xb6b8ccd230bb4235c7b87986274e7ab550b72261',
+        CCC: '0x383268691eE31c68489B19b8F2D7003ec504D534',
+	ARBI: '0xa7bD657C5838472dDF85FF0797A2e6fce8fd4833',
     },
     arbitrum: {
         slUSDT: '0x65cd2e7d7bacdac3aa9dae68fb5d548dfe1fefb5',
@@ -85,11 +87,25 @@ const contracts = {
         slETH: '0xdf6964c7ccfabaace7c3f918b795fa4a894589c8',
         iUSD: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
         iZi: '0x60D01EC2D5E98Ac51C8B4cF84DfCCE98D527c747',
+        MTG: '0x748b5be12ac1ce2ef73035189f943591c1822b7d',
+        USDT: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
         liquidityManager: '0x611575eE1fbd4F7915D0eABCC518eD396fF78F0c',
+        ARBI: '0x07DD5BEAffb65B8fF2e575d500BDf324a05295DC',
+	ETH: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
     },
     ethereum: {
 	
-    }
+    },
+    mantle: {
+        liquidityManager: '0x611575eE1fbd4F7915D0eABCC518eD396fF78F0c',
+        iZi: '0x60D01EC2D5E98Ac51C8B4cF84DfCCE98D527c747',
+        USDT: '0x201EBa5CC46D216Ce6DC03F6a759e8E766e956aE',
+        MINU: '0x51cfe5b1e764dc253f4c8c1f19a081ff4c3517ed',
+        MNT: '0x78c1b0C915c4FAA5FffA6CAbf0219DA63d7f4cb8',
+        LEND: '0x25356aeca4210ef7553140edb9b8026089e49396',
+        USDC: '0x09Bc4E0D864854c6aFB6eB9A9cdF58aC190D0dF9',
+        BEL: '0x3390108E913824B8eaD638444cc52B9aBdF63798',
+    },
 }
 
 module.exports = contracts;
