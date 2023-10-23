@@ -81,6 +81,10 @@ module.exports = {
         url: 'https://testnet.aurora.dev',
         accounts: [sk],
     },
+    mantle: {
+        url: 'https://rpc.mantle.xyz',
+        accounts: [sk],
+    },
   },
   docgen: {
     path: './docs',
