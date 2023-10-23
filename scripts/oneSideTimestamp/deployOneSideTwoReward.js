@@ -34,13 +34,13 @@ var para = {
 
     rewardTokenSymbol0: v[5],
     rewardTokenAddress0: contracts[net][v[5]],
-    rewardPerTime0: v[6],
+    rewardPerSecond0: v[6],
     provider0Symbol: v[7],
     provider0: getProviderAddress(v[7]),
 
     rewardTokenSymbol1: v[8],
     rewardTokenAddress1: contracts[net][v[8]],
-    rewardPerTime1: v[9],
+    rewardPerSecond1: v[9],
     provider1Symbol: v[10],
     provider1: getProviderAddress(v[10]),
 
@@ -100,8 +100,8 @@ async function main() {
 
   const Mining = await hardhat.ethers.getContractFactory("OneSideTimestamp");
 
-  para.rewardPerTime0 = await getNumNoDecimal(para.rewardTokenAddress0, para.rewardPerTime0);
-  para.rewardPerTime1 = await getNumNoDecimal(para.rewardTokenAddress1, para.rewardPerTime1);
+  para.rewardPerSecond0 = await getNumNoDecimal(para.rewardTokenAddress0, para.rewardPerSecond0);
+  para.rewardPerSecond1 = await getNumNoDecimal(para.rewardTokenAddress1, para.rewardPerSecond1);
 
   console.log("Deploy MiningOneSideTimestampBoost Contract: %s/%s", para.tokenUniSymbol,  para.tokenLockSymbol);
   console.log("Paramters: ");
@@ -128,13 +128,13 @@ async function main() {
       rewardToken: para.rewardTokenAddress0,
       provider: para.provider0,
       accRewardPerShare: 0,
-      rewardPerTime: para.rewardPerTime0,
+      rewardPerSecond: para.rewardPerSecond0,
     },
     {
         rewardToken: para.rewardTokenAddress1,
         provider: para.provider1,
         accRewardPerShare: 0,
-        rewardPerTime: para.rewardPerTime1,
+        rewardPerSecond: para.rewardPerSecond1,
     }],
     para.lockBoostMultiplier,
     iziAddr,
