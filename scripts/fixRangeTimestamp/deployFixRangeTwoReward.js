@@ -34,13 +34,13 @@ var para = {
 
     rewardTokenSymbol0: v[5],
     rewardTokenAddress0: contracts[net][v[5]],
-    rewardPerTime0: v[6],
+    rewardPerSecond0: v[6],
     rewardProvider0: getAddress(v[7]),
 
     rewardTokenSymbol1: v[8],
     rewardTokenAddress1: contracts[net][v[8]],
-    rewardPerTime1: v[9],
-    rewardProvider1: getAddress(v[7]),
+    rewardPerSecond1: v[9],
+    rewardProvider1: getAddress(v[10]),
 
     startTime: v[11],
     endTime: v[12],
@@ -112,8 +112,8 @@ async function main() {
 
   const Mining = await hardhat.ethers.getContractFactory("FixRangeTimestamp");
 
-  para.rewardPerTime0 = await getNumNoDecimal(para.rewardTokenAddress0, para.rewardPerTime0);
-  para.rewardPerTime1 = await getNumNoDecimal(para.rewardTokenAddress1, para.rewardPerTime1);
+  para.rewardPerSecond0 = await getNumNoDecimal(para.rewardTokenAddress0, para.rewardPerSecond0);
+  para.rewardPerSecond1 = await getNumNoDecimal(para.rewardTokenAddress1, para.rewardPerSecond1);
 
   var tickLower = para.priceLower0By1OrTickLower;
   var tickUpper = para.priceUpper0By1OrTickUpper;
@@ -163,13 +163,13 @@ async function main() {
       rewardToken: para.rewardTokenAddress0,
       provider: para.rewardProvider0,
       accRewardPerShare: 0,
-      rewardPerTime: para.rewardPerTime0,
+      rewardPerSecond: para.rewardPerSecond0,
     },
     {
         rewardToken: para.rewardTokenAddress1,
         provider: para.rewardProvider1,
         accRewardPerShare: 0,
-        rewardPerTime: para.rewardPerTime1,
+        rewardPerSecond: para.rewardPerSecond1,
     }],
     iziAddr,
     tickUpper,
