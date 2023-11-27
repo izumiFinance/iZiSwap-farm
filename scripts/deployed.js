@@ -105,6 +105,20 @@ const contracts = {
         LEND: '0x25356aeca4210ef7553140edb9b8026089e49396',
         USDC: '0x09Bc4E0D864854c6aFB6eB9A9cdF58aC190D0dF9',
         BEL: '0x3390108E913824B8eaD638444cc52B9aBdF63798',
+        AXL: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
+        CTT: '0x6a3b0eb5b57c9a4f5772fc900dae427e65f8c1a5',
+    },
+    linea: {
+        liquidityManager: '0x1CB60033F61e4fc171c963f0d2d3F63Ece24319c',
+        LAB: '0xB97F21D1f2508fF5c73E7B5AF02847640B1ff75d',
+        iZi: '0x60d01ec2d5e98ac51c8b4cf84dfcce98d527c747',
+        USDC: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
+    },
+    scroll: {
+        liquidityManager: '0x1502d025BfA624469892289D45C0352997251728',
+        LAB: '0x2A00647F45047f05BDed961Eb8ECABc42780e604',
+        USDC: '0x06efdbff2a14a7c8e15944d1f4a48f9f95f663a4',
+        iZi: '0x60d01ec2d5e98ac51c8b4cf84dfcce98d527c747',
     },
 }
 
