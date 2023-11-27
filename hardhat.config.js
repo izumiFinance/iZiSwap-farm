@@ -85,6 +85,10 @@ module.exports = {
         url: 'https://rpc.mantle.xyz',
         accounts: [sk],
     },
+    scroll: {
+        url: 'https://rpc.scroll.io',
+        accounts: [sk],
+    },
   },
   docgen: {
     path: './docs',
