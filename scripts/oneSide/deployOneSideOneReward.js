@@ -44,8 +44,8 @@ var para = {
 
     boost: v[11],
     feeChargePercent: v[12],
-    chargeReceiver: getProviderAddress(v[16]),
-    tickRangeLong: Number(v[17])
+    chargeReceiver: getProviderAddress(v[13]),
+    tickRangeLong: Number(v[14])
 }
 console.log('para: ', para);
 
@@ -94,7 +94,7 @@ async function main() {
   const Mining = await hardhat.ethers.getContractFactory("OneSide");
 
   para.rewardPerBlock0 = await getNumNoDecimal(para.rewardTokenAddress0, para.rewardPerBlock0);
-  para.rewardPerBlock1 = await getNumNoDecimal(para.rewardTokenAddress1, para.rewardPerBlock1);
+  //para.rewardPerBlock1 = await getNumNoDecimal(para.rewardTokenAddress1, para.rewardPerBlock1);
 
   console.log("Deploy MiningOneSideBoost Contract: %s/%s", para.tokenUniSymbol,  para.tokenLockSymbol);
   console.log("Paramters: ");
@@ -122,12 +122,6 @@ async function main() {
       provider: para.provider0,
       accRewardPerShare: 0,
       rewardPerBlock: para.rewardPerBlock0,
-    },
-    {
-        rewardToken: para.rewardTokenAddress1,
-        provider: para.provider1,
-        accRewardPerShare: 0,
-        rewardPerBlock: para.rewardPerBlock1,
     }],
     para.lockBoostMultiplier,
     iziAddr,
@@ -145,8 +139,8 @@ async function main() {
 
   // console.log(mining.deployTransaction);
   
-  await approve(await attachToken(para.rewardTokenAddress0), deployer, mining.address, "1000000000000000000000000000000");
-  await approve(await attachToken(para.rewardTokenAddress1), deployer, mining.address, "1000000000000000000000000000000");
+  //await approve(await attachToken(para.rewardTokenAddress0), deployer, mining.address, "1000000000000000000000000000000");
+  //await approve(await attachToken(para.rewardTokenAddress1), deployer, mining.address, "1000000000000000000000000000000");
 
   console.log("MiningOneSideBoost Contract Address: " , mining.address);
 
