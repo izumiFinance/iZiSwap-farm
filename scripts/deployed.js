@@ -107,6 +107,8 @@ const contracts = {
         BEL: '0x3390108E913824B8eaD638444cc52B9aBdF63798',
         AXL: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
         CTT: '0x6a3b0eb5b57c9a4f5772fc900dae427e65f8c1a5',
+        USDY: '0x5be26527e817998a7206475496fde1e68957c5a6',
+        USDLR: '0x8FE7176F0BF63358ad9490fd24Ac0bdB4Dac33a8',
     },
     linea: {
         liquidityManager: '0x1CB60033F61e4fc171c963f0d2d3F63Ece24319c',
