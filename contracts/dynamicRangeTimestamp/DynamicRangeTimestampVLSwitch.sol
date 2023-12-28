@@ -311,6 +311,8 @@ contract DynamicRangeVLSwitchTimestamp is BaseTimestamp {
             value: msg.value
         }(mintParam);
 
+        require(actualAmountX >= uint256(mintParam.xLim) * 985 / 1000, "actualAmountX too small");
+        require(actualAmountY >= uint256(mintParam.yLim) * 985 / 1000, "actualAmountY too small");
         if (useOriginLiquidity) {
             newTokenStatus.vLiquidity = newTokenStatus.iZiSwapLiquidity;
         } else {

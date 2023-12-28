@@ -307,6 +307,8 @@ contract DynamicRangeTimestamp is BaseTimestamp {
             value: msg.value
         }(mintParam);
 
+        require(actualAmountX >= uint256(mintParam.xLim) * 985 / 1000, "actualAmountX too small");
+        require(actualAmountY >= uint256(mintParam.yLim) * 985 / 1000, "actualAmountY too small");
         require(newTokenStatus.iZiSwapLiquidity > 1e7, "liquidity too small!");
         newTokenStatus.vLiquidity = newTokenStatus.iZiSwapLiquidity / 1e6;
 
