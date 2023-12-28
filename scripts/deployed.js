@@ -109,6 +109,8 @@ const contracts = {
         CTT: '0x6a3b0eb5b57c9a4f5772fc900dae427e65f8c1a5',
         USDY: '0x5be26527e817998a7206475496fde1e68957c5a6',
         USDLR: '0x8FE7176F0BF63358ad9490fd24Ac0bdB4Dac33a8',
+        mETH: '0xcDA86A272531e8640cD7F1a92c01839911B90bb0',
+        ETH: '0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111',
     },
     linea: {
         liquidityManager: '0x1CB60033F61e4fc171c963f0d2d3F63Ece24319c',
@@ -121,6 +123,13 @@ const contracts = {
         LAB: '0x2A00647F45047f05BDed961Eb8ECABc42780e604',
         USDC: '0x06efdbff2a14a7c8e15944d1f4a48f9f95f663a4',
         iZi: '0x60d01ec2d5e98ac51c8b4cf84dfcce98d527c747',
+        SKY: '0x95a52EC1d60e74CD3Eb002fE54A2c74b185A4C16',
+    },
+    manta: {
+        liquidityManager: '0x19b683A2F45012318d9B2aE1280d68d3eC54D663',
+        ASM: '0xCd5d6dE3fdBce1895F0Dac13A065673599ED6806',
+        STONE: '0xEc901DA9c68E90798BbBb74c11406A32A70652C3',
+        iZi: '0x91647632245caBf3d66121F86C387aE0ad295F9A',
     },
 }
 
