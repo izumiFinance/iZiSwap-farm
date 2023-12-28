@@ -398,6 +398,7 @@ contract OneSideTimestamp is BaseTimestamp {
                 value: msg.value
             }(iZiSwapParams);
         }
+        require(actualOneSideAmount >= uint256(oneSideAmount) * 985 / 1000, "actual amount too small");
 
         // mark owners and append to list
         owners[newTokenStatus.nftId] = msg.sender;
