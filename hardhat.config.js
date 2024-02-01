@@ -89,6 +89,10 @@ module.exports = {
         url: 'https://rpc.scroll.io',
         accounts: [sk],
     },
+    manta: {
+        url: 'https://manta-pacific.calderachain.xyz/http',
+        accounts: [sk],
+    },
   },
   docgen: {
     path: './docs',
