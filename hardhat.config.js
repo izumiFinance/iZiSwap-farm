@@ -89,6 +89,10 @@ module.exports = {
         url: 'https://rpc.scroll.io',
         accounts: [sk],
     },
+    zeta: {
+        url: 'https://zetachain-evm.blockpi.network/v1/rpc/public',
+        accounts: [sk],
+    },
   },
   docgen: {
     path: './docs',

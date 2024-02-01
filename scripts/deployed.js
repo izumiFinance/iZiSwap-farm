@@ -131,6 +131,15 @@ const contracts = {
         STONE: '0xEc901DA9c68E90798BbBb74c11406A32A70652C3',
         iZi: '0x91647632245caBf3d66121F86C387aE0ad295F9A',
     },
+    zeta: {
+        liquidityManager: '0x2db0AFD0045F3518c77eC6591a542e326Befd3D7',
+        USDT_bsc: '0x91d4F0D54090Df2D81e834c3c8CE71C6c865e79F',
+        ETH: '0xd97B1de3619ed2c6BEb3860147E30cA8A7dC9891',
+        stZETA: '0x45334a5b0a01ce6c260f2b570ec941c680ea62c0',
+        ZETA: '0x5f0b1a82749cb4e2278ec87f8bf6b618dc71a8bf',
+        USDT_eth: '0x7c8dDa80bbBE1254a7aACf3219EBe1481c6E01d7',
+        iZi: '0x60d01ec2d5e98ac51c8b4cf84dfcce98d527c747',
+    },
 }
 
 module.exports = contracts;
