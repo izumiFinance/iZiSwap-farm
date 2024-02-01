@@ -89,6 +89,10 @@ module.exports = {
         url: 'https://rpc.scroll.io',
         accounts: [sk],
     },
+    manta: {
+        url: 'https://manta-pacific.calderachain.xyz/http',
+	accounts: [sk],
+    },
     zeta: {
         url: 'https://zetachain-evm.blockpi.network/v1/rpc/public',
         accounts: [sk],
