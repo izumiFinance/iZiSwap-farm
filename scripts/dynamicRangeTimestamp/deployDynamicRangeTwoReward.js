@@ -100,6 +100,11 @@ async function main() {
     tmp = para.token0Symbol;
     para.token0Symbol = para.token1Symbol;
     para.token1Symbol = tmp;
+
+    const leftScale = 1.0 / para.pcRightScale
+    const rightScale = 1.0 / para.pcLeftScale
+    para.pcLeftScale = leftScale
+    para.pcRightScale = rightScale
   }
 
   const Mining = await hardhat.ethers.getContractFactory("DynamicRangeTimestamp");
