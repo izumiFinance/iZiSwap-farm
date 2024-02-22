@@ -123,10 +123,10 @@ async function main() {
   var iziAddr = '0x0000000000000000000000000000000000000000';
 
   if (para.boost.toString() != '0') {
-    iziAddr = contracts[net]['iZi'];
+    iziAddr = contracts[net][para.boost];
   }
 
-  console.log('iziAddr: ', iziAddr);
+  console.log('boostAddr: ', iziAddr);
 
   tickRangeLeft = Math.round(Math.log(1.0 / Number(para.pcLeftScale)) / Math.log(1.0001));
   tickRangeRight = Math.round(Math.log(para.pcRightScale) / Math.log(1.0001));
@@ -167,8 +167,8 @@ async function main() {
   const mining = await Mining.deploy(...args);
   await mining.deployed();
   
-  //await approve(await attachToken(para.rewardTokenAddress0), deployer, mining.address, "1000000000000000000000000000000");
-  //await approve(await attachToken(para.rewardTokenAddress1), deployer, mining.address, "1000000000000000000000000000000");
+  // await approve(await attachToken(para.rewardTokenAddress0), deployer, mining.address, "1000000000000000000000000000000");
+  // await approve(await attachToken(para.rewardTokenAddress1), deployer, mining.address, "1000000000000000000000000000000");
 
   console.log("DynamicRangeTimestamp Contract Address: " , mining.address);
 

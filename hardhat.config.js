@@ -91,11 +91,19 @@ module.exports = {
     },
     manta: {
         url: 'https://manta-pacific.calderachain.xyz/http',
-	accounts: [sk],
+	      accounts: [sk],
     },
     zeta: {
         url: 'https://zetachain-evm.blockpi.network/v1/rpc/public',
         accounts: [sk],
+    },
+    merlinTest: {
+      url: 'https://testnet-rpc.merlinchain.io',
+      accounts: [sk],
+    },
+    merlin: {
+      url: 'https://rpc.merlinchain.io',
+      accounts: [sk],
     },
   },
   docgen: {
