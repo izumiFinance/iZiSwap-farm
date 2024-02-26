@@ -144,9 +144,8 @@ const contracts = {
     },
     merlinTest: {
         liquidityManager: '0xC6C7c2edF70A3245ad6051E93809162B9758ce08',
-        iZi: '0x6AECfe44225A50895e9EC7ca46377B9397D1Bb5b',
+        HUHU: '0x879cd319b8aa506F4130acf766fA8E3654eD249B',
         USDT: '0x876508837C162aCedcc5dd7721015E83cbb4e339',
-        BIT: '0x2A19e0CF8c73280CdDdFd5877AA64A9690AE6d47',
         VOYA: '0x60FE1bE62fa2082b0897eA87DF8D2CfD45185D30',
     },
 }
