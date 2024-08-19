@@ -70,7 +70,7 @@ async function getDecimal(token) {
 async function getNumNoDecimal(tokenAddr, num) {
   var token = await attachToken(tokenAddr);
   var decimal = await getDecimal(token);
-  var numNoDecimal = num * (10 ** decimal);
+  var numNoDecimal = new BigNumber(num).times(10 ** decimal);
   return numNoDecimal.toFixed(0);
 }
 
@@ -92,6 +92,8 @@ async function approve(token, account, destAddr, amount) {
 async function main() {
     
   const [deployer] = await hardhat.ethers.getSigners();
+
+  console.log('origin para: ', para)
 
   if (para.token0Address.toUpperCase() > para.token1Address.toUpperCase()) {
     var tmp = para.token0Address;

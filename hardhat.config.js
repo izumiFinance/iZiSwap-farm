@@ -104,6 +104,24 @@ module.exports = {
     merlin: {
       url: 'https://rpc.merlinchain.io',
       accounts: [sk],
+      gasPrice: 0.05 * (10**9)
+    },
+    cyber: {
+      url: 'https://cyber.alt.technology/',
+      accounts: [sk],
+    },
+    klaytn: {
+      url: 'https://klaytn-pokt.nodies.app',
+      accounts: [sk],
+    },
+    neon: {
+      url: 'https://neon-proxy-mainnet.solana.p2p.org',
+      accounts: [sk],
+    },
+    taiko: {
+      url: 'https://rpc.taiko.xyz	',
+      accounts: [sk],
+      gasPrice: 12000000,
     },
   },
   docgen: {
