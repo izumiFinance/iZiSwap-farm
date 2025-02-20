@@ -124,6 +124,8 @@ const contracts = {
         USDC: '0x06efdbff2a14a7c8e15944d1f4a48f9f95f663a4',
         iZi: '0x60d01ec2d5e98ac51c8b4cf84dfcce98d527c747',
         SKY: '0x95a52EC1d60e74CD3Eb002fE54A2c74b185A4C16',
+        BAGGOR: '0x17a60bB4649A7Bb885d05c008D7118a5E513d895',
+        ETH: '0x5300000000000000000000000000000000000004',
     },
     manta: {
         liquidityManager: '0x19b683A2F45012318d9B2aE1280d68d3eC54D663',
@@ -137,6 +139,7 @@ const contracts = {
         liquidityManager: '0x2db0AFD0045F3518c77eC6591a542e326Befd3D7',
         USDT_bsc: '0x91d4F0D54090Df2D81e834c3c8CE71C6c865e79F',
         ETH: '0xd97B1de3619ed2c6BEb3860147E30cA8A7dC9891',
+        pufETH: '0x1e4bf3cabd7707089138dd5a545b077413fa83fc',
         stZETA: '0x45334a5b0a01ce6c260f2b570ec941c680ea62c0',
         ZETA: '0x5f0b1a82749cb4e2278ec87f8bf6b618dc71a8bf',
         USDT_eth: '0x7c8dDa80bbBE1254a7aACf3219EBe1481c6E01d7',
@@ -162,6 +165,7 @@ const contracts = {
         BTC: '0xf6d226f9dc15d9bb51182815b320d3fbe324e1ba',
         RUFI: '0x9bd60d6fc99843207b8149f9190438c1f81bddcd',
         THEBITMAPTOKEN: '0x7b0400231cddf8a7aca78d8c0483890cd0c6ffd6',
+        Party: '0x4D9882a3BB13cc086367D0aE964367e6B7ea246f',
     },
     cyber: {
         liquidityManager: '0x19b683A2F45012318d9B2aE1280d68d3eC54D663',
@@ -170,7 +174,9 @@ const contracts = {
     },
     klaytn: {
         liquidityManager: '0x19b683A2F45012318d9B2aE1280d68d3eC54D663',
+        PER: '0x7eee60a000986e9efe7f5c90340738558c24317b',
         KLAY: '0x19aac5f612f524b754ca7e7c41cbfa2e981a4432',
+        stKAIA: '0x42952b873ed6f7f0a7e4992e2a9818e3a9001995',
         USDC_e: '0xe2053bcf56d2030d2470fb454574237cf9ee3d4b',
         USDT: '0x9025095263d1e548dc890a7589a4c78038ac40ab',
         KKULP: '0x0f58d0abaae2f586b0d3b6d045305463e89ba603',
@@ -191,6 +197,23 @@ const contracts = {
         USDC_E: '0x19e26B0638bf63aa9fa4d14c6baF8D52eBE86C5C',
         iZi: '0xa2FbA3fDe6c9E7386716B577e1258577CB9b5Bf7',
         TAIKO: '0xA9d23408b9bA935c230493c40C73824Df71A0975',
+        AVL: '0xE9cA67e5051e1806546d0a06ee465221c5877feE',
+        USDT: '0x2DEF195713CF4a606B49D07E520e22C17899a736',
+    },
+    flow: {
+        liquidityManager: '0x19b683A2F45012318d9B2aE1280d68d3eC54D663',
+        FLOW: '0xd3bF53DAC106A0290B0483EcBC89d40FcC961f3e',
+        USDC_E: '0x7f27352D5F83Db87a5A3E00f4B07Cc2138D8ee52',
+        ANKRFLOWEVM: '0x1b97100eA1D7126C4d60027e231EA4CB25314bdb',
+        STFLOW: '0x5598c0652B899EB40f169Dd5949BdBE0BF36ffDe',
+    },
+    iotex: {
+        liquidityManager: '0x19b683A2F45012318d9B2aE1280d68d3eC54D663',
+        uniIOTX: '0x236f8c0a61da474db21b693fb2ea7aab0c803894',
+        ioUSD: '0xa1a1531f6ae90192edcc32e9f38e98f303708144',
+        USDa: '0x2d9526e2cabd30c6e8f89ea60d230503c59c6603',
+        USDC_E: '0xcdf79194c6c285077a58da47641d4dbe51f63542',
+        IOTX: '0xA00744882684C3e4747faEFD68D283eA44099D03',
     },
 }
 
