@@ -67,7 +67,7 @@ module.exports = {
       accounts: [sk]
     },
     bscTest: {
-	    url: 'https://data-seed-prebsc-1-s3.binance.org:8545/',
+	    url: 'https://bsc-testnet-rpc.publicnode.com',
       accounts: [sk],
       // gas: 90000000,
       gasPrice: 10000000000,
@@ -102,16 +102,16 @@ module.exports = {
       accounts: [sk],
     },
     merlin: {
-      url: 'https://rpc.merlinchain.io',
+      url: 'https://endpoints.omniatech.io/v1/merlin/mainnet/public',
       accounts: [sk],
-      gasPrice: 0.05 * (10**9)
+      gasPrice: 0.006 * (10**9)
     },
     cyber: {
       url: 'https://cyber.alt.technology/',
       accounts: [sk],
     },
     klaytn: {
-      url: 'https://klaytn-pokt.nodies.app',
+      url: 'https://klaytn.blockpi.network/v1/rpc/public',
       accounts: [sk],
     },
     neon: {
@@ -122,6 +122,14 @@ module.exports = {
       url: 'https://rpc.taiko.xyz	',
       accounts: [sk],
       gasPrice: 12000000,
+    },
+    flow: {
+      url: 'https://mainnet.evm.nodes.onflow.org',
+      accounts: [sk],
+    },
+    iotex: {
+      url: 'https://babel-api.fastblocks.io',
+      accounts: [sk],
     },
   },
   docgen: {
