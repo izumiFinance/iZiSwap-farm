@@ -152,8 +152,8 @@ async function main() {
     tickRangeRight,
     para.useOriginLiquidity === 'true'
   ];
-
-  console.log('args: ', args);
+  console.log('constructor args:');
+  console.log('module.exports= ', args);
 
   const mining = await Mining.deploy(...args);
   await mining.deployed();
