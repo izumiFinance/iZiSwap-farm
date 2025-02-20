@@ -4,7 +4,7 @@ const {ethers} = require("hardhat");
 const BigNumber = require('bignumber.js');
 
 const Web3 = require("web3");
-const secret = require('../../.secret.js');
+const secret = require('../.secret.js');
 const pk = secret.pk;
 
 const config = require("../../hardhat.config.js");
