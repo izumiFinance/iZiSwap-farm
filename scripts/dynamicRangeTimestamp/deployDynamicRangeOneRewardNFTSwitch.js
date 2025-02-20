@@ -2,17 +2,6 @@ const hardhat = require("hardhat");
 const contracts = require("../deployed.js");
 const BigNumber = require("bignumber.js");
 
-// example
-// HARDHAT_NETWORK='izumiTest' \
-//     node deployMiningDynamicRangeBoostV2TwoReward.js \
-//     'DDAO' 'WETH9' 3000 \
-//     'iZi' 0.462962962 iZi_PROVIDER \
-//     'DDAO' 0.09259259259 DDAO_PROVIDER \
-//      startTime endTime \
-//      0.25 4 \
-//      1 \
-//      40 \
-//      CHARGE_RECEIVER 
 const v = process.argv
 const net = process.env.HARDHAT_NETWORK
 
