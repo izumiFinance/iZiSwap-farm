@@ -64,8 +64,6 @@ const net = process.env.HARDHAT_NETWORK
 const rpc = config.networks[net].url
 const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
 
-//Example: HARDHAT_NETWORK='bsc' node approveTokenWeb3.js testA 0x3a6d8ca21d1cf76f653a67577fa0d27453350dd8
-
 const para = {
     token0Symbol: v[2],
     token0Address: contracts[net][v[2]],
