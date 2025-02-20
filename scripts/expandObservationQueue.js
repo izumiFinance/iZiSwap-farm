@@ -7,8 +7,8 @@ const Web3 = require("web3");
 const secret = require('../.secret.js');
 const pk = secret.pk;
 
-const config = require("../../hardhat.config.js");
-const contracts = require('../deployed.js');
+const config = require("../hardhat.config.js");
+const contracts = require('./deployed.js');
 
 const poolABI = [
     {
