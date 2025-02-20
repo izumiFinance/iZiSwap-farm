@@ -21,8 +21,6 @@ const secret = require('./.secret.js');
 
 const apiKey = secret.pkApiKey;
 const sk = secret.pk;
-const sk2 = secret.pk2;
-const sk3 = secret.pk3;
 const izumiRpcUrl = "http://47.241.103.6:9545";
 
 /**
@@ -40,12 +38,6 @@ module.exports = {
   },
 
   networks: {
-    izumiTest: {
-      url: izumiRpcUrl,
-      gas: 8000000,
-      gasPrice: 50000000000,
-      accounts: [sk, sk2, sk3]
-    },
     arbitrum: {
       url: 'https://arb1.arbitrum.io/rpc',
       accounts: [sk]
