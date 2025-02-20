@@ -1,9 +1,0 @@
-HARDHAT_NETWORK='taiko' \
-    node scripts/dynamicRangeTimestamp/deployDynamicRangeOneRewardNFTSwitch.js \
-    AVL USDT 10000 \
-    TAIKO 0.0011118226 0x0060CAC5C52bCd21446a677e02f02a6e85aE9535 \
-    1728640800 1729764000 \
-    0.9 1.1 \
-    0 \
-    100 \
-    0x3599a414b4365b118766479600c0fd135177c2d5 
