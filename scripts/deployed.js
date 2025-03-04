@@ -148,6 +148,7 @@ const contracts = {
         RUFI: '0x9bd60d6fc99843207b8149f9190438c1f81bddcd',
         THEBITMAPTOKEN: '0x7b0400231cddf8a7aca78d8c0483890cd0c6ffd6',
         Party: '0x4D9882a3BB13cc086367D0aE964367e6B7ea246f',
+	MDBL: '0x8aed42735027aa6d97023d8196b084ecfba701af',
     },
     cyber: {
         liquidityManager: '0x19b683A2F45012318d9B2aE1280d68d3eC54D663',

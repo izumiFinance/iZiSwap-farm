@@ -94,7 +94,8 @@ module.exports = {
       accounts: [sk],
     },
     merlin: {
-      url: 'https://endpoints.omniatech.io/v1/merlin/mainnet/public',
+      //url: 'https://endpoints.omniatech.io/v1/merlin/mainnet/public',
+      url: 'https://merlin.blockpi.network/v1/rpc/public',
       accounts: [sk],
       gasPrice: 0.006 * (10**9)
     },
