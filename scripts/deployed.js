@@ -198,6 +198,12 @@ const contracts = {
         USDC_E: '0xcdf79194c6c285077a58da47641d4dbe51f63542',
         IOTX: '0xA00744882684C3e4747faEFD68D283eA44099D03',
     },
+   overProtocol: {
+        liquidityManager: '0x19b683A2F45012318d9B2aE1280d68d3eC54D663',
+	WOVER: '0x59c914C8ac6F212bb655737CC80d9Abc79A1e273',
+	USDT: '0xA510432E4aa60B4acd476fb850EC84B7EE226b2d',
+   }
+
 }
 
 module.exports = contracts;

@@ -124,6 +124,10 @@ module.exports = {
       url: 'https://babel-api.fastblocks.io',
       accounts: [sk],
     },
+    overProtocol: {
+      url: 'https://rpc.overprotocol.com/',
+      accounts: [sk],
+    },
   },
   docgen: {
     path: './docs',
